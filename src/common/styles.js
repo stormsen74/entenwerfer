@@ -78,11 +78,14 @@ export const ToggleLang = styled.div`
 `
 
 export const Content = styled.div`
-  padding: 2rem;
+  padding: 1.75rem 1.25rem 5.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 800px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  box-sizing: border-box;
 `
 
 export const Header = styled.h1`
@@ -166,25 +169,30 @@ export const FooterRight = styled.div`
 
 //------------------------------------------//
 export const NavBar = styled.nav`
-  width: 100%;
-  background-color: ${colors.grey.dark};
-  border-bottom: 1px solid ${colors.grey.medium};
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background-color: #0d0d0d;
+  border-top: 1px solid #1e1e1e;
   display: flex;
-  align-items: center;
-  padding: 0 1.5rem;
-  gap: 0.25rem;
+  align-items: stretch;
+  z-index: 100;
 `
 
-export const NavLink = styled.a`
-  color: ${props => (props.$active ? colors.green[100] : colors.grey.light)};
-  text-decoration: none;
-  font-size: 0.95rem;
-  padding: 0.75rem 1rem;
-  border-bottom: 2px solid ${props => (props.$active ? colors.green[100] : 'transparent')};
-  transition: color 0.2s ease, border-color 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    color: ${colors.green[100]};
-  }
+export const NavItem = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: ${props => (props.$active ? colors.green[100] : '#555')};
+  font-size: 0.82rem;
+  font-weight: ${props => (props.$active ? '600' : '400')};
+  letter-spacing: 0.02em;
+  border-top: 2px solid ${props => (props.$active ? colors.green[100] : 'transparent')};
+  transition: color 0.18s ease, border-color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 `

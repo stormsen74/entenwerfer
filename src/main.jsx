@@ -1,9 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
-import Home from './Home.jsx'
-import Players from './pages/Players.jsx'
+import Home from './pages/Home.jsx'
 import PlayersEdit from './pages/PlayersEdit.jsx'
 import Game from './pages/Game.jsx'
 import Nav from './common/Nav.jsx'
@@ -13,14 +12,13 @@ import { GlobalStyle } from './common/styles.js'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <GlobalStyle />
-    <BrowserRouter>
-      {/*<Nav />*/}
+    <HashRouter>
+      <Nav />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/players' element={<Players />} />
-        <Route path='/players/edit' element={<PlayersEdit />} />
+        <Route path='/players' element={<PlayersEdit />} />
         <Route path='/game' element={<Game />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   </StrictMode>
 )

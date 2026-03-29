@@ -5,197 +5,270 @@ import usePlayers from '../hooks/usePlayers'
 
 const Form = styled.form`
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.6rem;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
   width: 100%;
-  max-width: 600px;
 `
 
 const Input = styled.input`
   flex: 1;
-  min-width: 140px;
-  padding: 0.5rem 0.75rem;
-  background: ${colors.grey.dark};
-  border: 1px solid ${colors.grey.medium};
-  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  background: #141414;
+  border: 1px solid #252525;
+  border-radius: 10px;
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-family: inherit;
+  min-height: 48px;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
     border-color: ${colors.green[55]};
   }
+
+  &::placeholder {
+    color: #444;
+  }
+`
+
+const DisabledInput = styled(Input)`
+  opacity: 0.5;
+  cursor: not-allowed;
 `
 
 const Btn = styled.button`
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
+  padding: 0 1.1rem;
+  min-height: 48px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 0.9rem;
   font-family: inherit;
-  background: ${props => (props.$variant === 'danger' ? '#c0392b' : colors.green[55])};
-  color: #fff;
-  transition: opacity 0.2s;
+  font-weight: 500;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+
+  background: ${({ $v }) => ($v === 'danger' ? '#2a1010' : $v === 'ghost' ? '#181818' : colors.green[25])};
+  color: ${({ $v }) => ($v === 'danger' ? '#e05555' : $v === 'ghost' ? '#666' : colors.green[100])};
+  border: 1px solid ${({ $v }) => ($v === 'danger' ? '#3a1515' : $v === 'ghost' ? '#252525' : colors.green[55])};
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.75;
   }
 
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.3;
     cursor: default;
   }
 `
 
-const PlayerTable = styled.ul`
+const AddBtn = styled(Btn)`
+  width: 100%;
+  min-height: 52px;
+  font-size: 1rem;
+`
+
+const PlayerList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
   width: 100%;
-  max-width: 600px;
 `
 
-const Row = styled.li`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid ${colors.grey.medium};
+const PlayerRow = styled.li`
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #1a1a1a;
 
   &:last-child {
     border-bottom: none;
   }
 `
 
-const RowName = styled.span`
+const PlayerInfo = styled.div`
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid #426135;
+  border-radius: 10px;
+`
+
+const PlayerName = styled.span`
   flex: 1;
+  font-size: 1.25rem;
   color: #ccc;
 `
 
-const RowPos = styled.span`
-  color: ${colors.green[55]};
-  font-size: 0.85rem;
-  min-width: 80px;
+const Actions = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
 `
 
-const POSITIONS = ['Handler', 'Cutter', 'Hybrid']
+const TopBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 1rem;
+`
 
-const EMPTY_FORM = { name: '', position: 'Handler' }
+const PlusBtn = styled.button`
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid ${colors.green[55]};
+  background: ${colors.green[25]};
+  color: ${colors.green[100]};
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.75;
+  }
+`
+
+const EMPTY_FORM = { name: '', playername: '', playernumber: '', level: '', position: '' }
 
 const PlayersEdit = () => {
   const { players, addPlayer, updatePlayer, deletePlayer } = usePlayers()
   const [form, setForm] = useState(EMPTY_FORM)
+  const [adding, setAdding] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [editData, setEditData] = useState({})
 
   const handleAdd = e => {
     e.preventDefault()
-    if (!form.name.trim()) return
+    if (!form.playername.trim()) return
     addPlayer(form)
     setForm(EMPTY_FORM)
+    setAdding(false)
   }
 
   const startEdit = player => {
     setEditingId(player.id)
-    setEditData({ name: player.name, position: player.position })
+    setEditData({
+      name: player.name ?? '',
+      playername: player.playername ?? '',
+      playernumber: player.playernumber ?? '',
+      level: player.level ?? '',
+      position: player.position ?? '',
+    })
   }
 
   const saveEdit = id => {
-    if (!editData.name.trim()) return
+    if (!editData.playername.trim()) return
     updatePlayer(id, editData)
     setEditingId(null)
   }
 
-  const cancelEdit = () => setEditingId(null)
-
-  const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name))
+  const sorted = [...players].sort((a, b) => Number(a.playernumber) - Number(b.playernumber))
 
   return (
     <Content>
-      <Header>Spieler verwalten</Header>
+      <TopBar>{!adding && <PlusBtn onClick={() => setAdding(true)}>+</PlusBtn>}</TopBar>
 
-      <Form onSubmit={handleAdd}>
-        <Input
-          placeholder="Name"
-          value={form.name}
-          onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
-        />
-        <select
-          value={form.position}
-          onChange={e => setForm(prev => ({ ...prev, position: e.target.value }))}
-          style={{
-            padding: '0.5rem',
-            background: colors.grey.dark,
-            border: `1px solid ${colors.grey.medium}`,
-            borderRadius: '4px',
-            color: '#fff',
-            fontFamily: 'inherit',
-          }}
-        >
-          {POSITIONS.map(pos => (
-            <option key={pos} value={pos}>
-              {pos}
-            </option>
-          ))}
-        </select>
-        <Btn type="submit" disabled={!form.name.trim()}>
-          Hinzufügen
-        </Btn>
-      </Form>
+      {adding && (
+        <Form onSubmit={handleAdd}>
+          <Input
+            placeholder='name'
+            value={form.name}
+            onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+          />
+          <Input
+            placeholder='playername'
+            value={form.playername}
+            onChange={e => setForm(prev => ({ ...prev, playername: e.target.value }))}
+          />
+          <Input
+            placeholder='playernumber'
+            value={form.playernumber}
+            onChange={e => setForm(prev => ({ ...prev, playernumber: e.target.value }))}
+          />
+          <DisabledInput placeholder='level' value={form.level} disabled />
+          <DisabledInput placeholder='position' value={form.position} disabled />
+          <Actions>
+            <AddBtn type='submit' disabled={!form.playername.trim()}>
+              Hinzufügen
+            </AddBtn>
+            <Btn
+              type='button'
+              $v='ghost'
+              onClick={() => {
+                setAdding(false)
+                setForm(EMPTY_FORM)
+              }}
+            >
+              Abbrechen
+            </Btn>
+          </Actions>
+        </Form>
+      )}
 
-      <PlayerTable>
+      <PlayerList>
         {sorted.map(p => (
-          <Row key={p.id}>
+          <PlayerRow key={p.id}>
             {editingId === p.id ? (
               <>
                 <Input
+                  placeholder='Max Schnattermann'
                   value={editData.name}
                   onChange={e => setEditData(prev => ({ ...prev, name: e.target.value }))}
-                  style={{ flex: 1 }}
                 />
-                <select
-                  value={editData.position}
-                  onChange={e => setEditData(prev => ({ ...prev, position: e.target.value }))}
-                  style={{
-                    padding: '0.4rem',
-                    background: colors.grey.dark,
-                    border: `1px solid ${colors.grey.medium}`,
-                    borderRadius: '4px',
-                    color: '#fff',
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  {POSITIONS.map(pos => (
-                    <option key={pos} value={pos}>
-                      {pos}
-                    </option>
-                  ))}
-                </select>
-                <Btn type="button" onClick={() => saveEdit(p.id)}>
-                  Speichern
-                </Btn>
-                <Btn type="button" $variant="danger" onClick={cancelEdit}>
-                  Abbrechen
-                </Btn>
+                <Input
+                  placeholder='Entenwerfer'
+                  value={editData.playername}
+                  onChange={e => setEditData(prev => ({ ...prev, playername: e.target.value }))}
+                />
+                <Input
+                  placeholder='9'
+                  value={editData.playernumber}
+                  onChange={e => setEditData(prev => ({ ...prev, playernumber: e.target.value }))}
+                />
+                <DisabledInput placeholder='Level' value={editData.level} disabled />
+                <DisabledInput placeholder='Position' value={editData.position} disabled />
+                <Actions style={{ paddingLeft: 0, marginTop: '0.5rem' }}>
+                  <Btn type='button' onClick={() => saveEdit(p.id)}>
+                    Speichern
+                  </Btn>
+                  <Btn type='button' $v='ghost' onClick={() => setEditingId(null)}>
+                    Abbrechen
+                  </Btn>
+                </Actions>
               </>
             ) : (
               <>
-                <RowName>{p.name}</RowName>
-                <RowPos>{p.position}</RowPos>
-                <Btn type="button" onClick={() => startEdit(p)}>
-                  Bearbeiten
-                </Btn>
-                <Btn type="button" $variant="danger" onClick={() => deletePlayer(p.id)}>
-                  Löschen
-                </Btn>
+                <PlayerInfo>
+                  <PlayerName>
+                    {p.playername} {p.playernumber}
+                  </PlayerName>
+                </PlayerInfo>
+                <Actions>
+                  <Btn type='button' $v='ghost' onClick={() => startEdit(p)}>
+                    Bearbeiten
+                  </Btn>
+                  <Btn type='button' $v='danger' onClick={() => deletePlayer(p.id)}>
+                    Löschen
+                  </Btn>
+                </Actions>
               </>
             )}
-          </Row>
+          </PlayerRow>
         ))}
-      </PlayerTable>
+      </PlayerList>
     </Content>
   )
 }

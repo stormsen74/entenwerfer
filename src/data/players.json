@@ -1,6 +1,9 @@
 [
-  { "id": "1", "name": "Max Mustermann", "position": "Handler" },
-  { "id": "2", "name": "Erika Musterfrau", "position": "Cutter" },
-  { "id": "3", "name": "Jonas Weber", "position": "Handler" },
-  { "id": "4", "name": "Laura Schmidt", "position": "Cutter" }
+  { "id": "0",
+    "name": "Max Mustermann",
+    "playername": "Ente",
+    "playernumber": "9",
+    "level": "",
+    "position": "Handler"
+  }
 ]

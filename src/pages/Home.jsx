@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Logo from './assets/entenwerfer_logo.svg'
+import Logo from '../assets/entenwerfer_logo.svg'
 import { useTranslation } from 'react-i18next'
 import {
   Container,
@@ -14,7 +14,7 @@ import {
   SvgImage,
   Text,
   ToggleLang,
-} from './common/styles.js'
+} from '../common/styles.js'
 
 const Home = () => {
   const { t, i18n } = useTranslation()

@@ -1,36 +1,36 @@
 import { useState, useEffect } from 'react'
-import seedPlayers from '../data/players.json'
 
-const STORAGE_KEY = 'entenwerfer_players'
-
-const loadFromStorage = () => {
-  const stored = localStorage.getItem(STORAGE_KEY)
-  if (stored) return JSON.parse(stored)
-  return seedPlayers
-}
-
-const saveToStorage = players => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(players))
-}
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')
+const playersEndpoint = `${apiBaseUrl}/api/players.php`
 
 const usePlayers = () => {
-  const [players, setPlayers] = useState(loadFromStorage)
+  const [players, setPlayers] = useState([])
 
   useEffect(() => {
-    saveToStorage(players)
-  }, [players])
+    fetch(playersEndpoint)
+      .then(r => r.json())
+      .then(setPlayers)
+  }, [])
+
+  const save = updated => {
+    setPlayers(updated)
+    fetch(playersEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    })
+  }
 
   const addPlayer = player => {
-    const newPlayer = { ...player, id: Date.now().toString() }
-    setPlayers(prev => [...prev, newPlayer])
+    save([...players, { ...player, id: Date.now().toString() }])
   }
 
   const updatePlayer = (id, data) => {
-    setPlayers(prev => prev.map(p => (p.id === id ? { ...p, ...data } : p)))
+    save(players.map(p => (p.id === id ? { ...p, ...data } : p)))
   }
 
   const deletePlayer = id => {
-    setPlayers(prev => prev.filter(p => p.id !== id))
+    save(players.filter(p => p.id !== id))
   }
 
   return { players, addPlayer, updatePlayer, deletePlayer }
