@@ -105,8 +105,33 @@ const PlayerName = styled.span`
 
 const Actions = styled.div`
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.6rem;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+`
+
+const IconBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+  background: ${({ $v }) => ($v === 'danger' ? '#2a1010' : '#181818')};
+  color: ${({ $v }) => ($v === 'danger' ? '#e05555' : '#555')};
+  border: 1px solid ${({ $v }) => ($v === 'danger' ? '#3a1515' : '#252525')};
+
+  &:hover {
+    opacity: 0.75;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
 `
 
 const TopBar = styled.div`
@@ -257,12 +282,16 @@ const PlayersEdit = () => {
                   </PlayerName>
                 </PlayerInfo>
                 <Actions>
-                  <Btn type='button' $v='ghost' onClick={() => startEdit(p)}>
-                    Bearbeiten
-                  </Btn>
-                  <Btn type='button' $v='danger' onClick={() => deletePlayer(p.id)}>
-                    Löschen
-                  </Btn>
+                  <IconBtn type='button' title='Bearbeiten' onClick={() => startEdit(p)}>
+                    <svg viewBox='0 0 16 16' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
+                      <path d='M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z'/>
+                    </svg>
+                  </IconBtn>
+                  <IconBtn type='button' $v='danger' title='Löschen' onClick={() => deletePlayer(p.id)}>
+                    <svg viewBox='0 0 16 16' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
+                      <path d='M2 4h12M5 4V2.5h6V4M6 7v5M10 7v5M3 4l1 9.5h8L13 4'/>
+                    </svg>
+                  </IconBtn>
                 </Actions>
               </>
             )}

@@ -1,0 +1,335 @@
+[
+    {
+        "id": "1774812862666",
+        "state": "ended",
+        "teams": [
+            {
+                "name": "Alpha",
+                "players": [
+                    {
+                        "name": "zweiter",
+                        "playername": "ente",
+                        "playernumber": "12",
+                        "level": "",
+                        "position": "",
+                        "id": "1774782022534"
+                    }
+                ]
+            },
+            {
+                "name": "Beta",
+                "players": [
+                    {
+                        "name": "Mike",
+                        "playername": "stormsen",
+                        "playernumber": "13",
+                        "level": "",
+                        "position": "",
+                        "id": "1774779975741"
+                    }
+                ]
+            }
+        ],
+        "shuffled": true,
+        "time_start": "2026-03-29T19:34:22.666Z",
+        "time_end": "2026-03-29T19:35:06.183Z",
+        "final_result": {
+            "teamA": 1,
+            "teamB": 1
+        }
+    },
+    {
+        "id": "1774812262207",
+        "state": "ended",
+        "teams": [
+            {
+                "name": "Alpha",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "D",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783462402"
+                    },
+                    {
+                        "name": "zweiter",
+                        "playername": "ente",
+                        "playernumber": "12",
+                        "level": "",
+                        "position": "",
+                        "id": "1774782022534"
+                    }
+                ]
+            },
+            {
+                "name": "Beta",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "B",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783452944"
+                    }
+                ]
+            }
+        ],
+        "time_start": "2026-03-29T19:24:22.207Z",
+        "time_end": "2026-03-29T19:27:56.289Z",
+        "final_result": {
+            "teamA": 23,
+            "teamB": 8
+        }
+    },
+    {
+        "id": "1774811012598",
+        "state": "ended",
+        "teams": [
+            {
+                "name": "Alpha",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "C",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783458176"
+                    },
+                    {
+                        "name": "",
+                        "playername": "B",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783452944"
+                    },
+                    {
+                        "name": "",
+                        "playername": "E",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783474168"
+                    }
+                ]
+            },
+            {
+                "name": "Beta",
+                "players": [
+                    {
+                        "name": "zweiter",
+                        "playername": "ente",
+                        "playernumber": "12",
+                        "level": "",
+                        "position": "",
+                        "id": "1774782022534"
+                    },
+                    {
+                        "name": "",
+                        "playername": "D",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783462402"
+                    }
+                ]
+            }
+        ],
+        "time_start": "2026-03-29T19:03:32.598Z",
+        "time_end": "2026-03-29T19:34:07.539Z",
+        "final_result": {
+            "teamA": 2,
+            "teamB": 2
+        }
+    },
+    {
+        "id": "1774809195748",
+        "state": "ended",
+        "teams": [
+            {
+                "name": "Alpha",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "C",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783458176"
+                    },
+                    {
+                        "name": "zweiter",
+                        "playername": "ente",
+                        "playernumber": "12",
+                        "level": "",
+                        "position": "",
+                        "id": "1774782022534"
+                    },
+                    {
+                        "name": "",
+                        "playername": "E",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783474168"
+                    }
+                ]
+            },
+            {
+                "name": "Beta",
+                "players": [
+                    {
+                        "name": "Mike",
+                        "playername": "stormsen",
+                        "playernumber": "13",
+                        "level": "",
+                        "position": "",
+                        "id": "1774779975741"
+                    },
+                    {
+                        "name": "",
+                        "playername": "D",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783462402"
+                    }
+                ]
+            }
+        ],
+        "time_start": "2026-03-29T18:33:15.748Z",
+        "time_end": "2026-03-29T18:35:43.410Z",
+        "final_result": {
+            "teamA": 7,
+            "teamB": 9
+        }
+    },
+    {
+        "id": "1774809153653",
+        "state": "ended",
+        "teams": [
+            {
+                "name": "Alpha",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "D",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783462402"
+                    },
+                    {
+                        "name": "",
+                        "playername": "C",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783458176"
+                    },
+                    {
+                        "name": "",
+                        "playername": "B",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783452944"
+                    }
+                ]
+            },
+            {
+                "name": "Beta",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "E",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783474168"
+                    },
+                    {
+                        "name": "Mike",
+                        "playername": "stormsen",
+                        "playernumber": "13",
+                        "level": "",
+                        "position": "",
+                        "id": "1774779975741"
+                    }
+                ]
+            }
+        ],
+        "time_start": "2026-03-29T18:32:33.653Z",
+        "time_end": "2026-03-29T18:33:02.986Z",
+        "final_result": {
+            "teamA": 4,
+            "teamB": 5
+        }
+    },
+    {
+        "id": "1774808684958",
+        "state": "ended",
+        "teams": [
+            {
+                "name": "Alpha",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "B",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783452944"
+                    },
+                    {
+                        "name": "zweiter",
+                        "playername": "ente",
+                        "playernumber": "12",
+                        "level": "",
+                        "position": "",
+                        "id": "1774782022534"
+                    },
+                    {
+                        "name": "",
+                        "playername": "C",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783458176"
+                    }
+                ]
+            },
+            {
+                "name": "Beta",
+                "players": [
+                    {
+                        "name": "",
+                        "playername": "D",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783462402"
+                    },
+                    {
+                        "name": "",
+                        "playername": "E",
+                        "playernumber": "",
+                        "level": "",
+                        "position": "",
+                        "id": "1774783474168"
+                    }
+                ]
+            }
+        ],
+        "time_start": "2026-03-29T18:24:44.958Z",
+        "time_end": "2026-03-29T18:24:55.941Z",
+        "final_result": {
+            "teamA": 12,
+            "teamB": 3
+        }
+    }
+]
