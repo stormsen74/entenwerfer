@@ -798,7 +798,7 @@ const Game = () => {
         </ScoreWrapper>
         <SubmitRow>
           <SubmitBtn onClick={handleSubmitScore} disabled={!canSubmit}>
-            Speichern
+            SAVE
           </SubmitBtn>
         </SubmitRow>
       </Content>
@@ -830,14 +830,14 @@ const Game = () => {
         <FabStack>
           {isRunning ? (
             <Fab $danger onClick={handleEndMatch}>
-              End Match
+              END MATCH
             </Fab>
           ) : (
             <>
               <Fab $primary onClick={handleStartMatch}>
-                Start Match
+                START MATCH
               </Fab>
-              {!alreadyShuffled && <Fab onClick={handleShuffle}>Shuffle</Fab>}
+              {!alreadyShuffled && <Fab onClick={handleShuffle}>SHUFFLE</Fab>}
             </>
           )}
         </FabStack>
