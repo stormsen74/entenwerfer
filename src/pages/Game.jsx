@@ -246,6 +246,7 @@ const TeamHeader = styled.div`
   color: #f5ab3c;
   text-align: center;
   margin-bottom: 0.25rem;
+  min-height: 40px;
 `
 
 const TeamCard = styled.div`
@@ -289,6 +290,7 @@ const ScoreLabel = styled.div`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #555;
+  min-height: 40px;
 `
 
 const ScoreInput = styled.input`
@@ -434,6 +436,7 @@ const MatchTeamColHeader = styled.div`
   text-transform: uppercase;
   color: #666;
   margin-bottom: 0.3rem;
+  min-height: 40px;
 `
 
 const MatchPlayerItem = styled.div`
@@ -487,7 +490,8 @@ const MatchDeleteBtn = styled.button`
 // ─── Shared UI ────────────────────────────────────────────────────────────────
 
 const BackLink = styled.button`
-  position: absolute;
+  position: fixed;
+  z-index: 100;
   top: 1.25rem;
   left: 1.25rem;
   align-self: flex-start;
@@ -869,7 +873,7 @@ const Game = () => {
       </Grid>
       <FabStack>
         <Fab $primary onClick={handleSet} disabled={active.size === 0}>
-          Set
+          SET
         </Fab>
       </FabStack>
     </Content>
