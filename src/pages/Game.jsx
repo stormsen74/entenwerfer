@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Content, colors } from '../common/styles'
+import { teamnames } from '../utils/teamnames'
 import usePlayers from '../hooks/usePlayers'
 import useMatches from '../hooks/useMatches'
 
@@ -16,12 +17,20 @@ function shuffleArray(arr) {
   return a
 }
 
-function buildTeams(players) {
+function pickTeamNames() {
+  const pool = [...teamnames]
+  const i = Math.floor(Math.random() * pool.length)
+  const first = pool.splice(i, 1)[0]
+  const j = Math.floor(Math.random() * pool.length)
+  return [first, pool[j]]
+}
+
+function buildTeams(players, names) {
   const shuffled = shuffleArray(players)
   const mid = Math.ceil(shuffled.length / 2)
   return [
-    { name: 'Alpha', players: shuffled.slice(0, mid) },
-    { name: 'Beta', players: shuffled.slice(mid) },
+    { name: names[0], players: shuffled.slice(0, mid) },
+    { name: names[1], players: shuffled.slice(mid) },
   ]
 }
 
@@ -110,7 +119,7 @@ const TeamHeader = styled.div`
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #555;
+  color: #f5ab3c;
   text-align: center;
   margin-bottom: 0.25rem;
 `
@@ -354,6 +363,9 @@ const MatchDeleteBtn = styled.button`
 // ─── Shared UI ────────────────────────────────────────────────────────────────
 
 const BackLink = styled.button`
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
   align-self: flex-start;
   background: none;
   border: none;
@@ -486,7 +498,7 @@ const Game = () => {
     setPhase('hiding')
     setTimeout(() => {
       const activePlayers = sorted.filter(p => active.has(p.id))
-      const newTeams = buildTeams(activePlayers)
+      const newTeams = buildTeams(activePlayers, pickTeamNames())
       setTeams(newTeams)
       setPhase('teams')
       updateMatch(currentMatchId, { state: 'pending', teams: newTeams })
@@ -495,7 +507,8 @@ const Game = () => {
 
   const handleShuffle = () => {
     const activePlayers = sorted.filter(p => active.has(p.id))
-    const newTeams = buildTeams(activePlayers)
+    const existingNames = teams ? teams.map(t => t.name) : pickTeamNames()
+    const newTeams = buildTeams(activePlayers, existingNames)
     setTeams(newTeams)
     updateMatch(currentMatchId, { teams: newTeams, shuffled: true })
   }
@@ -541,7 +554,7 @@ const Game = () => {
     return (
       <Content>
         {matches.length === 0 ? (
-          <EmptyNote>Noch kein Match. Erstelle eines.</EmptyNote>
+          <EmptyNote>No matches.</EmptyNote>
         ) : (
           <MatchList>
             {sortedMatches.map(m => {
