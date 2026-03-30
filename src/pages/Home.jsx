@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Logo from '../assets/entenwerfer_logo.svg'
 import { useTranslation } from 'react-i18next'
 import {
@@ -33,6 +34,20 @@ const Home = () => {
   return (
     <>
       <Container>
+        <Link
+          to='/game'
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '60px',
+            height: '60px',
+            opacity: 0,
+            zIndex: 100,
+            display: 'block',
+          }}
+          aria-label='Zum Spiel'
+        />
         <ToggleLang onClick={toggleLang}>{isDefaultLang ? 'EN' : 'DE'}</ToggleLang>
         <Content>
           <SvgImage src={Logo} alt='My SVG Icon' />

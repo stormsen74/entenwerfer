@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Content, Header, colors } from '../common/styles'
 import usePlayers from '../hooks/usePlayers'
@@ -22,6 +23,7 @@ const Input = styled.input`
   font-family: inherit;
   min-height: 48px;
   box-sizing: border-box;
+  width: 100%;
 
   &:focus {
     outline: none;
@@ -79,27 +81,32 @@ const PlayerList = styled.ul`
 
 const PlayerRow = styled.li`
   padding: 0.8rem 0;
-  border-bottom: 1px solid #1a1a1a;
+  //border-bottom: 1px solid #1a1a1a;
 
   &:last-child {
-    border-bottom: none;
+    //border-bottom: none;
   }
 `
 
+const PlayerItem = styled.div`
+  border: 1px solid #f5ab3c;
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: rgba(2, 141, 70, 0.25);
+`
+
 const PlayerInfo = styled.div`
-  padding: 0.5rem 0;
   display: flex;
   align-items: center;
   text-align: center;
   gap: 0.75rem;
   margin: 0.5rem 0;
-  border: 1px solid #426135;
-  border-radius: 10px;
 `
 
 const PlayerName = styled.span`
   flex: 1;
   font-size: 1.25rem;
+  font-weight: 600;
   color: #ccc;
 `
 
@@ -107,6 +114,7 @@ const Actions = styled.div`
   display: flex;
   gap: 0.4rem;
   margin-top: 0.4rem;
+  justify-content: space-between;
 `
 
 const IconBtn = styled.button`
@@ -134,36 +142,35 @@ const IconBtn = styled.button`
   }
 `
 
-const TopBar = styled.div`
+const FabStack = styled.div`
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  margin-bottom: 1rem;
+  flex-direction: column-reverse;
+  gap: 0.65rem;
+  z-index: 90;
 `
 
-const PlusBtn = styled.button`
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid ${colors.green[55]};
-  background: ${colors.green[25]};
-  color: ${colors.green[100]};
-  font-size: 1.6rem;
-  line-height: 1;
-  cursor: pointer;
+const Fab = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 1.25rem;
+  height: 52px;
+  border-radius: 26px;
+  border: 1.5px solid ${colors.green[55]};
+  background: rgba(0, 255, 105, 0.1);
+  color: ${colors.green[100]};
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s;
-
-  &:hover {
-    opacity: 0.75;
-  }
+  user-select: none;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
 `
 
 const EMPTY_FORM = { name: '', playername: '', playernumber: '', level: '', position: '' }
@@ -204,7 +211,27 @@ const PlayersEdit = () => {
 
   return (
     <Content>
-      <TopBar>{!adding && <PlusBtn onClick={() => setAdding(true)}>+</PlusBtn>}</TopBar>
+      {!adding && (
+        <>
+          <Link
+            to='/game'
+            style={{
+              position: 'fixed',
+              bottom: '1.25rem',
+              left: 0,
+              width: '60px',
+              height: '52px',
+              opacity: 0,
+              zIndex: 100,
+              display: 'block',
+            }}
+            aria-label='Zum Spiel'
+          />
+          <FabStack>
+            <Fab onClick={() => setAdding(true)}>+ Player</Fab>
+          </FabStack>
+        </>
+      )}
 
       {adding && (
         <Form onSubmit={handleAdd}>
@@ -265,7 +292,7 @@ const PlayersEdit = () => {
                 />
                 <DisabledInput placeholder='Level' value={editData.level} disabled />
                 <DisabledInput placeholder='Position' value={editData.position} disabled />
-                <Actions style={{ paddingLeft: 0, marginTop: '0.5rem' }}>
+                <Actions style={{ paddingLeft: 0, marginTop: '1rem' }}>
                   <Btn type='button' onClick={() => saveEdit(p.id)}>
                     Speichern
                   </Btn>
@@ -275,7 +302,7 @@ const PlayersEdit = () => {
                 </Actions>
               </>
             ) : (
-              <>
+              <PlayerItem>
                 <PlayerInfo>
                   <PlayerName>
                     {p.playername} {p.playernumber}
@@ -283,17 +310,31 @@ const PlayersEdit = () => {
                 </PlayerInfo>
                 <Actions>
                   <IconBtn type='button' title='Bearbeiten' onClick={() => startEdit(p)}>
-                    <svg viewBox='0 0 16 16' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
-                      <path d='M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z'/>
+                    <svg
+                      viewBox='0 0 16 16'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='1.5'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <path d='M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z' />
                     </svg>
                   </IconBtn>
                   <IconBtn type='button' $v='danger' title='Löschen' onClick={() => deletePlayer(p.id)}>
-                    <svg viewBox='0 0 16 16' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
-                      <path d='M2 4h12M5 4V2.5h6V4M6 7v5M10 7v5M3 4l1 9.5h8L13 4'/>
+                    <svg
+                      viewBox='0 0 16 16'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='1.5'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <path d='M2 4h12M5 4V2.5h6V4M6 7v5M10 7v5M3 4l1 9.5h8L13 4' />
                     </svg>
                   </IconBtn>
                 </Actions>
-              </>
+              </PlayerItem>
             )}
           </PlayerRow>
         ))}

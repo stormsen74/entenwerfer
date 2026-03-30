@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Content, colors } from '../common/styles'
 import usePlayers from '../hooks/usePlayers'
@@ -222,11 +223,11 @@ const MatchCard = styled.div`
 `
 
 const MatchCardHeader = styled.div`
-  padding: 0.85rem 1.25rem;
+  padding: 1rem 1.25rem;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.45rem;
 `
 
 const MatchHeaderTop = styled.div`
@@ -236,14 +237,14 @@ const MatchHeaderTop = styled.div`
 `
 
 const MatchTitle = styled.span`
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  color: #ccc;
+  color: #e0e0e0;
 `
 
 const MatchState = styled.span`
-  font-size: 0.72rem;
-  color: #444;
+  font-size: 0.78rem;
+  color: #666;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 `
@@ -255,13 +256,13 @@ const MatchHeaderScore = styled.div`
 `
 
 const MatchTeamLabel = styled.span`
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #555;
+  color: #888;
 `
 
 const MatchScoreText = styled.span`
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: ${colors.green[100]};
   letter-spacing: 0.04em;
@@ -294,21 +295,26 @@ const MatchTeamCol = styled.div`
 `
 
 const MatchTeamColHeader = styled.div`
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #444;
+  color: #666;
   margin-bottom: 0.3rem;
 `
 
 const MatchPlayerItem = styled.div`
-  font-size: 0.9rem;
-  color: #777;
+  font-size: 0.95rem;
+  color: #999;
+`
+
+const MatchExpandedActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 const MatchOpenBtn = styled.button`
-  align-self: flex-end;
   background: none;
   border: none;
   color: #555;
@@ -318,6 +324,31 @@ const MatchOpenBtn = styled.button`
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+`
+
+const MatchDeleteBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+  background: #2a1010;
+  color: #e05555;
+  border: 1px solid #3a1515;
+
+  &:hover {
+    opacity: 0.75;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
 `
 
 // ─── Shared UI ────────────────────────────────────────────────────────────────
@@ -343,7 +374,7 @@ const EmptyNote = styled.p`
 
 const FabStack = styled.div`
   position: fixed;
-  bottom: 4.5rem;
+  bottom: 1.25rem;
   right: 1.25rem;
   display: flex;
   flex-direction: column-reverse;
@@ -355,15 +386,15 @@ const Fab = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 1.25rem;
-  height: 44px;
-  border-radius: 22px;
+  padding: 0 1.5rem;
+  height: 52px;
+  border-radius: 26px;
   border: 1.5px solid
     ${({ $primary, $danger }) => ($danger ? 'rgba(255, 60, 60, 0.55)' : $primary ? colors.green[55] : '#333')};
   background: ${({ $primary, $danger }) =>
     $danger ? 'rgba(255, 60, 60, 0.1)' : $primary ? 'rgba(0, 255, 105, 0.1)' : '#111'};
   color: ${({ $primary, $danger }) => ($danger ? 'rgba(255, 90, 90, 1)' : $primary ? colors.green[100] : '#666')};
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -383,7 +414,7 @@ const Fab = styled.button`
 
 const Game = () => {
   const { players } = usePlayers()
-  const { matches, addMatch, updateMatch } = useMatches()
+  const { matches, addMatch, updateMatch, deleteMatch } = useMatches()
 
   const [currentMatchId, setCurrentMatchId] = useState(null)
 
@@ -489,24 +520,39 @@ const Game = () => {
   // ── Match list view ──
 
   if (currentMatchId === null) {
+    const formatMatchDate = ts => {
+      const d = new Date(ts)
+      if (isNaN(d)) return '–'
+      return (
+        d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' }) +
+        ' ' +
+        d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+      )
+    }
+
+    const sortedMatches = [...matches].sort((a, b) => {
+      const aEnded = a.state === 'ended'
+      const bEnded = b.state === 'ended'
+      if (aEnded !== bEnded) return aEnded ? 1 : -1
+      if (aEnded && bEnded) return new Date(b.time_end) - new Date(a.time_end)
+      return Number(b.id) - Number(a.id)
+    })
+
     return (
       <Content>
         {matches.length === 0 ? (
           <EmptyNote>Noch kein Match. Erstelle eines.</EmptyNote>
         ) : (
           <MatchList>
-            {matches.map((m, i) => {
+            {sortedMatches.map(m => {
               const hasTeams = m.teams && m.teams.length === 2
               const isExpanded = expandedId === m.id
-              const toggleExpand = () =>
-                setExpandedId(isExpanded ? null : m.id)
+              const toggleExpand = () => setExpandedId(isExpanded ? null : m.id)
               return (
                 <MatchCard key={m.id}>
-                  <MatchCardHeader
-                    onClick={hasTeams ? toggleExpand : () => openMatch(m.id)}
-                  >
+                  <MatchCardHeader onClick={toggleExpand}>
                     <MatchHeaderTop>
-                      <MatchTitle>Match {matches.length - i}</MatchTitle>
+                      <MatchTitle>{formatMatchDate(m.time_start)}</MatchTitle>
                       <MatchState>{m.state}</MatchState>
                     </MatchHeaderTop>
                     {hasTeams && (
@@ -523,9 +569,9 @@ const Game = () => {
                       </MatchHeaderScore>
                     )}
                   </MatchCardHeader>
-                  {hasTeams && (
-                    <MatchExpanded $open={isExpanded}>
-                      <MatchExpandedInner>
+                  <MatchExpanded $open={isExpanded}>
+                    <MatchExpandedInner>
+                      {hasTeams && (
                         <MatchTeamCols>
                           {m.teams.map(team => (
                             <MatchTeamCol key={team.name}>
@@ -536,19 +582,47 @@ const Game = () => {
                             </MatchTeamCol>
                           ))}
                         </MatchTeamCols>
-                        {m.state !== 'ended' && (
-                          <MatchOpenBtn onClick={() => openMatch(m.id)}>
-                            Weiter →
-                          </MatchOpenBtn>
+                      )}
+                      <MatchExpandedActions>
+                        {m.state !== 'ended' ? (
+                          <MatchOpenBtn onClick={() => openMatch(m.id)}>Weiter →</MatchOpenBtn>
+                        ) : (
+                          <span />
                         )}
-                      </MatchExpandedInner>
-                    </MatchExpanded>
-                  )}
+                        <MatchDeleteBtn title='Match löschen' onClick={() => deleteMatch(m.id)}>
+                          <svg
+                            viewBox='0 0 16 16'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='1.5'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          >
+                            <path d='M2 4h12M5 4V2.5h6V4M6 7v5M10 7v5M3 4l1 9.5h8L13 4' />
+                          </svg>
+                        </MatchDeleteBtn>
+                      </MatchExpandedActions>
+                    </MatchExpandedInner>
+                  </MatchExpanded>
                 </MatchCard>
               )
             })}
           </MatchList>
         )}
+        <Link
+          to='/players'
+          style={{
+            position: 'fixed',
+            bottom: '1.25rem',
+            left: 0,
+            width: '60px',
+            height: '52px',
+            opacity: 0,
+            zIndex: 100,
+            display: 'block',
+          }}
+          aria-label='Zu den Spielern'
+        />
         <FabStack>
           <Fab $primary onClick={createMatch}>
             + Match
@@ -624,11 +698,7 @@ const Game = () => {
               <Fab $primary onClick={handleStartMatch}>
                 Start Match
               </Fab>
-              {!alreadyShuffled && (
-                <Fab onClick={handleShuffle}>
-                  Shuffle
-                </Fab>
-              )}
+              {!alreadyShuffled && <Fab onClick={handleShuffle}>Shuffle</Fab>}
             </>
           )}
         </FabStack>

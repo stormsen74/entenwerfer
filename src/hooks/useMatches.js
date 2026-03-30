@@ -29,7 +29,11 @@ const useMatches = () => {
     save(matches.map(m => (m.id === id ? { ...m, ...data } : m)))
   }
 
-  return { matches, addMatch, updateMatch }
+  const deleteMatch = id => {
+    save(matches.filter(m => m.id !== id))
+  }
+
+  return { matches, addMatch, updateMatch, deleteMatch }
 }
 
 export default useMatches

@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <GlobalStyle />
     <HashRouter>
-      <Nav />
+      {/*<Nav />*/}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/players' element={<PlayersEdit />} />
