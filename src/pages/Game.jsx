@@ -50,6 +50,21 @@ const FrisbeeDisc = styled.img`
   animation: ${flyDisk} var(--duration) linear var(--delay) 1 both;
 `
 
+const Ente = styled.img`
+  position: absolute;
+  transform: translate3d(0, -50%, 0);
+  width: 50px;
+  height: 50px;
+  pointer-events: none;
+`
+
+const Ente2 = styled.div`
+  position: absolute;
+  transform: translate3d(0, -20px, 0);
+  pointer-events: none;
+  font-size: 26px;
+`
+
 function generateDiskConfigs(cfg) {
   const w = window.innerWidth
   const h = window.innerHeight
@@ -140,10 +155,22 @@ function pickTeamNames() {
 
 function buildTeams(players, names) {
   const shuffled = shuffleArray(players)
-  const mid = Math.ceil(shuffled.length / 2)
+
+  // const mid = Math.ceil(shuffled.length / 2)
+  // return [
+  //   { name: names[0], players: shuffled.slice(0, mid) },
+  //   { name: names[1], players: shuffled.slice(mid) },
+  // ]
+
+  const baseSize = Math.floor(shuffled.length / 2)
+  const hasExtraPlayer = shuffled.length % 2 === 1
+  const extraGoesToFirstTeam = Math.random() < 0.5
+
+  const firstTeamSize = hasExtraPlayer ? baseSize + (extraGoesToFirstTeam ? 1 : 0) : baseSize
+
   return [
-    { name: names[0], players: shuffled.slice(0, mid) },
-    { name: names[1], players: shuffled.slice(mid) },
+    { name: names[0], players: shuffled.slice(0, firstTeamSize) },
+    { name: names[1], players: shuffled.slice(firstTeamSize) },
   ]
 }
 
@@ -247,6 +274,10 @@ const TeamHeader = styled.div`
   text-align: center;
   margin-bottom: 0.25rem;
   min-height: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 `
 
 const TeamCard = styled.div`
@@ -317,6 +348,34 @@ const ScoreInput = styled.input`
 const SubmitRow = styled.div`
   width: 100%;
   margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+`
+
+const ReplayBtn = styled.button`
+  width: 100%;
+  padding: 0.9rem;
+  border-radius: 14px;
+  border: 1.5px solid ${colors.green[55]};
+  background: rgba(0, 255, 105, 0.1);
+  color: ${colors.green[100]};
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease 0.1s;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 `
 
 const SubmitBtn = styled.button`
@@ -332,6 +391,7 @@ const SubmitBtn = styled.button`
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  transition: all 0.25s ease;
 
   &:disabled {
     opacity: 0.3;
@@ -554,7 +614,7 @@ const Fab = styled.button`
 
 const Game = () => {
   const { players } = usePlayers()
-  const { matches, addMatch, updateMatch, deleteMatch } = useMatches()
+  const { matches, addMatch, updateMatch, deleteMatch, updateAndAddMatch } = useMatches()
 
   const [currentMatchId, setCurrentMatchId] = useState(null)
 
@@ -563,6 +623,7 @@ const Game = () => {
   // phase: 'select' | 'hiding' | 'teams' | 'running' | 'scoring'
   const [phase, setPhase] = useState('select')
   const [teams, setTeams] = useState(null)
+  const [advantageTeamIndex, setAdvantageTeamIndex] = useState(null)
   const [score, setScore] = useState({ alpha: '', beta: '' })
   const [expandedId, setExpandedId] = useState(null)
   const didRestoreRef = useRef(false)
@@ -623,6 +684,8 @@ const Game = () => {
 
   const handleSet = () => {
     if (active.size === 0) return
+    const newAdvantage = Math.random() < 0.5 ? 0 : 1
+    setAdvantageTeamIndex(newAdvantage)
     setPhase('hiding')
     setTimeout(() => {
       const activePlayers = sorted.filter(p => active.has(p.id))
@@ -636,6 +699,8 @@ const Game = () => {
   const handleFrisbeeDone = useCallback(() => setPhase('teams'), [])
 
   const handleShuffle = () => {
+    const newAdvantage = Math.random() < 0.5 ? 0 : 1
+    setAdvantageTeamIndex(newAdvantage)
     const activePlayers = sorted.filter(p => active.has(p.id))
     const existingNames = teams ? teams.map(t => t.name) : pickTeamNames()
     const newTeams = buildTeams(activePlayers, existingNames)
@@ -645,6 +710,7 @@ const Game = () => {
 
   const handleStartMatch = () => {
     setPhase('running')
+    setAdvantageTeamIndex(null)
     updateMatch(currentMatchId, { state: 'running' })
   }
 
@@ -658,6 +724,24 @@ const Game = () => {
     const result = { teamA: Number(score.alpha), teamB: Number(score.beta) }
     updateMatch(currentMatchId, { state: 'ended', final_result: result })
     setCurrentMatchId(null)
+  }
+
+  const handleReplay = () => {
+    const result = { teamA: Number(score.alpha), teamB: Number(score.beta) }
+    const id = Date.now().toString()
+    const newMatch = {
+      id,
+      state: 'pending',
+      teams,
+      shuffled: false,
+      time_start: new Date(),
+      time_end: null,
+      final_result: null,
+    }
+    updateAndAddMatch(currentMatchId, { state: 'ended', final_result: result }, newMatch)
+    setCurrentMatchId(id)
+    setScore({ alpha: '', beta: '' })
+    setPhase('teams')
   }
 
   // ── Match list view ──
@@ -804,6 +888,22 @@ const Game = () => {
           <SubmitBtn onClick={handleSubmitScore} disabled={!canSubmit}>
             SAVE
           </SubmitBtn>
+          <ReplayBtn onClick={handleReplay} disabled={!canSubmit}>
+            <svg
+              viewBox='0 0 16 16'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='1.5'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              width='16'
+              height='16'
+            >
+              <path d='M2 8a6 6 0 1 0 1.5-3.9' />
+              <path d='M2 3.5V8h4.5' />
+            </svg>
+            REPLAY
+          </ReplayBtn>
         </SubmitRow>
       </Content>
     )
@@ -819,9 +919,14 @@ const Game = () => {
       <Content>
         <BackLink onClick={() => setCurrentMatchId(null)}>← Matches</BackLink>
         <TeamsGrid>
-          {teams.map(team => (
+          {teams.map((team, i) => (
             <TeamColumn key={team.name}>
-              <TeamHeader>{team.name}</TeamHeader>
+              <TeamHeader>
+                <>{team.name}</>
+                {/*{phase === 'teams' && advantageTeamIndex === i && <Ente src={diskImg} alt='' />}*/}
+                {phase === 'teams' && advantageTeamIndex === i && <Ente2>{'🦆'}</Ente2>}
+                {/*<Ente2>{'🦆'}</Ente2>*/}
+              </TeamHeader>
               {team.players.map(p => (
                 <TeamCard key={p.id} $muted={isRunning}>
                   <BgNumber $active={!isRunning}>{p.playernumber}</BgNumber>
@@ -851,15 +956,17 @@ const Game = () => {
 
   // ── Match detail: selection view ──
 
-  const visiblePlayers = phase === 'hiding' || phase === 'frisbee' ? sorted.filter(p => active.has(p.id)) : sorted
+  const selectablePlayers = sorted.filter(p => !p.muted)
+  const visiblePlayers =
+    phase === 'hiding' || phase === 'frisbee' ? selectablePlayers.filter(p => active.has(p.id)) : selectablePlayers
 
   return (
     <Content>
       {phase === 'frisbee' && <FrisbeeOverlay onDone={handleFrisbeeDone} />}
       <BackLink onClick={() => setCurrentMatchId(null)}>← Matches</BackLink>
-      <Status>
-        {active.size} / {sorted.length} aktiv
-      </Status>
+      {/*<Status>*/}
+      {/*  {active.size} / {selectablePlayers.length} aktiv*/}
+      {/*</Status>*/}
       <Grid $phase={phase} $dur={FRISBEE_CONFIG.totalDuration}>
         {visiblePlayers.map(p => {
           const isActive = active.has(p.id)

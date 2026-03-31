@@ -33,7 +33,12 @@ const useMatches = () => {
     save(matches.filter(m => m.id !== id))
   }
 
-  return { matches, addMatch, updateMatch, deleteMatch }
+  const updateAndAddMatch = (id, data, newMatch) => {
+    const updated = matches.map(m => (m.id === id ? { ...m, ...data } : m))
+    save([newMatch, ...updated])
+  }
+
+  return { matches, addMatch, updateMatch, deleteMatch, updateAndAddMatch }
 }
 
 export default useMatches

@@ -192,7 +192,9 @@ export const NavItem = styled.span`
   font-weight: ${props => (props.$active ? '600' : '400')};
   letter-spacing: 0.02em;
   border-top: 2px solid ${props => (props.$active ? colors.green[100] : 'transparent')};
-  transition: color 0.18s ease, border-color 0.18s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.18s ease;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 `
