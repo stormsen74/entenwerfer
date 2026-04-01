@@ -60,7 +60,7 @@ const Ente = styled.img`
 
 const Ente2 = styled.div`
   position: absolute;
-  transform: translate3d(0, -20px, 0);
+  transform: translate3d(0, -35px, 0);
   pointer-events: none;
   font-size: 26px;
 `
@@ -228,17 +228,14 @@ const Card = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem 0.75rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 14px;
   background: ${({ $active }) => ($active ? 'rgba(0, 255, 105, 0.07)' : '#111')};
   border: 1.5px solid ${({ $active }) => ($active ? colors.green[55] : '#222')};
   box-shadow: ${({ $active }) => ($active ? '0 0 12px rgba(0, 255, 105, 0.18)' : 'none')};
   cursor: pointer;
   min-height: 88px;
-  transition:
-    background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
+  transition: all 0.3s ease-in;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 `
@@ -257,6 +254,7 @@ const TeamsGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 0.65rem;
   width: 100%;
+  padding: 3.5rem;
 `
 
 const TeamColumn = styled.div`
@@ -277,7 +275,7 @@ const TeamHeader = styled.div`
 
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 `
 
 const TeamCard = styled.div`
@@ -286,16 +284,13 @@ const TeamCard = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem 0.75rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 14px;
   background: ${({ $muted }) => ($muted ? '#0d0d0d' : 'rgba(0, 255, 105, 0.07)')};
   border: 1.5px solid ${({ $muted }) => ($muted ? '#1a1a1a' : colors.green[55])};
   box-shadow: ${({ $muted }) => ($muted ? 'none' : '0 0 12px rgba(0, 255, 105, 0.18)')};
   min-height: 88px;
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: all 0.3s ease-in;
 `
 
 // ─── Score input styled components ───────────────────────────────────────────
@@ -591,8 +586,7 @@ const Fab = styled.button`
   border-radius: 26px;
   border: 1.5px solid
     ${({ $primary, $danger }) => ($danger ? 'rgba(255, 60, 60, 0.55)' : $primary ? colors.green[55] : '#333')};
-  background: ${({ $primary, $danger }) =>
-    $danger ? 'rgba(255, 60, 60, 0.1)' : $primary ? 'rgba(0, 255, 105, 0.1)' : '#111'};
+  background: ${({ $primary, $danger }) => ($danger ? 'rgba(0, 0, 0, 0.5)' : $primary ? 'rgba(0, 0, 0, 0.5)' : '#111')};
   color: ${({ $primary, $danger }) => ($danger ? 'rgba(255, 90, 90, 1)' : $primary ? colors.green[100] : '#666')};
   font-size: 1rem;
   font-weight: 600;
@@ -946,7 +940,11 @@ const Game = () => {
               <Fab $primary onClick={handleStartMatch}>
                 START MATCH
               </Fab>
-              {!alreadyShuffled && <Fab onClick={handleShuffle}>SHUFFLE</Fab>}
+              {!alreadyShuffled && (
+                <Fab $primary onClick={handleShuffle}>
+                  SHUFFLE
+                </Fab>
+              )}
             </>
           )}
         </FabStack>
