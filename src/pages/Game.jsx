@@ -517,6 +517,31 @@ const MatchOpenBtn = styled.button`
   user-select: none;
 `
 
+const MatchReplayBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+  background: #0d1f10;
+  color: #55c46e;
+  border: 1px solid #1a3a1f;
+
+  &:hover {
+    opacity: 0.75;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+`
+
 const MatchDeleteBtn = styled.button`
   display: flex;
   align-items: center;
@@ -676,6 +701,25 @@ const Game = () => {
     }
   }
 
+  const replayMatch = matchTeams => {
+    const id = Date.now().toString()
+    const newMatch = {
+      id,
+      state: 'pending',
+      teams: matchTeams,
+      shuffled: false,
+      time_start: new Date(),
+      time_end: null,
+      final_result: null,
+    }
+    addMatch(newMatch)
+    setCurrentMatchId(id)
+    setTeams(matchTeams)
+    setActive(new Set(matchTeams.flatMap(t => t.players.map(p => p.id))))
+    setScore({ alpha: '', beta: '' })
+    setPhase('teams')
+  }
+
   const handleSet = () => {
     if (active.size === 0) return
     const newAdvantage = Math.random() < 0.5 ? 0 : 1
@@ -807,6 +851,20 @@ const Game = () => {
                       <MatchExpandedActions>
                         {m.state !== 'ended' ? (
                           <MatchOpenBtn onClick={() => openMatch(m.id)}>Weiter →</MatchOpenBtn>
+                        ) : m.teams?.length === 2 ? (
+                          <MatchReplayBtn title='Rematch' onClick={() => replayMatch(m.teams)}>
+                            <svg
+                              viewBox='0 0 16 16'
+                              fill='none'
+                              stroke='currentColor'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            >
+                              <path d='M2 8a6 6 0 1 0 1.5-3.9' />
+                              <path d='M2 3.5V8h4.5' />
+                            </svg>
+                          </MatchReplayBtn>
                         ) : (
                           <span />
                         )}
