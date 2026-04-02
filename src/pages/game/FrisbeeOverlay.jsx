@@ -3,14 +3,14 @@ import diskImg from '../../assets/disk.png'
 import { FrisbeeDisc, FrisbeeLayer } from './styles.js'
 
 export const FRISBEE_CONFIG = {
-  count: 7, // number of disks
-  minSize: 90, // px
-  maxSize: 230, // px
-  totalDuration: 1500, // ms before teams are revealed
+  count: 8, // number of disks
+  minSize: 100, // px
+  maxSize: 150, // px
+  totalDuration: 1900, // ms before teams are revealed
   minFlightMs: 650, // individual disk animation min duration
   maxFlightMs: 800, // individual disk animation max duration
-  maxDelay: 500, // max random start delay per disk (ms)
-  maxYOffset: 750, // max vertical drift from entry Y to exit Y (px)
+  maxDelay: 900, // stagger window: disks are spread across this range (ms)
+  maxYOffset: 500, // max vertical drift from entry Y to exit Y (px)
 }
 
 function generateDiskConfigs(cfg) {
@@ -23,6 +23,15 @@ function generateDiskConfigs(cfg) {
   for (let i = sides.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[sides[i], sides[j]] = [sides[j], sides[i]]
+  }
+
+  // Slot-based stagger: divide delay range into equal slots, one per disk,
+  // then shuffle slot assignments so launch order is independent of disk properties.
+  const slotSize = maxDelay / count
+  const delays = Array.from({ length: count }, (_, i) => Math.round(i * slotSize + Math.random() * slotSize))
+  for (let i = delays.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[delays[i], delays[j]] = [delays[j], delays[i]]
   }
 
   return Array.from({ length: count }, (_, i) => {
@@ -46,7 +55,7 @@ function generateDiskConfigs(cfg) {
       toY,
       rotation: `${Math.round(rotDeg)}deg`,
       duration: Math.round(minFlightMs + Math.random() * (maxFlightMs - minFlightMs)),
-      delay: Math.round(Math.random() * maxDelay),
+      delay: delays[i],
     }
   })
 }
