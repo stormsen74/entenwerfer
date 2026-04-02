@@ -26,7 +26,6 @@ export const teamnames = [
 
   // US Sports
   'Thunder Hawks',
-  'Iron Giants',
   'Red Raptors',
   'Blue Barracudas',
   'Savage Wolves',
@@ -59,7 +58,6 @@ export const teamnames = [
   'The Benchwarmers',
   'The Tryhards',
   'Die Untrainierten',
-  'Die Taktikfüchse',
   'Almost Pros',
   'Die Afterwork Heroes',
   'Die Kaffeepausen Crew',
